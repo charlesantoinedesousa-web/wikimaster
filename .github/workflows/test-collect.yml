@@ -1,8 +1,10 @@
 
-name: Test collecte WIKIMASTER
+name: WIKIMASTER - Collecte automatique
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "7,37 * * * *"
 
 permissions:
   contents: read
@@ -10,7 +12,6 @@ permissions:
 jobs:
   collect:
     runs-on: ubuntu-latest
-
     steps:
       - name: Recuperer le code
         uses: actions/checkout@v4
@@ -20,13 +21,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Lancer la collecte
+      - name: Collecter les actualites
         run: python collect.py
 
-      - name: Conserver les resultats
+      - name: Archiver les resultats
         uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: wikimaster-articles
+          name: wikimaster-articles-${{ github.run_id }}
           path: articles.json
           retention-days: 7
