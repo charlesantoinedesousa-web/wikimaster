@@ -1,0 +1,32 @@
+
+name: Test collecte WIKIMASTER
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Recuperer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Lancer la collecte
+        run: python collect.py
+
+      - name: Conserver les resultats
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: wikimaster-articles
+          path: articles.json
+          retention-days: 7
